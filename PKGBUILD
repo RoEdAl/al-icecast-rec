@@ -7,7 +7,7 @@ pkgrel='1'
 arch=('any')
 license=('BSD')
 depends=('icecast' 'libxslt' 'ffmpeg' 'alsa-utils')
-optdeps=('mailcap: for mime.types file')
+optdepends=('mailcap: for mime.types file')
 
 source=( 
     'icecast-rec.service'
