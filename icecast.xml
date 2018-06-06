@@ -1,0 +1,42 @@
+<icecast>
+    <limits>
+        <clients>10</clients>
+        <sources>2</sources>
+    </limits>
+
+    <authentication/>
+
+    <http-headers>
+        <header name="Access-Control-Allow-Origin" value="*" />
+    </http-headers>
+
+    <mount type="normal">
+        <mount-name>/live</mount-name>
+        <hidden>0</hidden>
+        <public>1</public>
+    </mount>
+
+    <mount type="normal">
+        <mount-name>/live-hd</mount-name>
+        <hidden>0</hidden>
+        <public>1</public>
+    </mount>
+
+    <paths>
+        <basedir>/usr/share/icecast</basedir>
+        <webroot>/usr/share/icecast/web</webroot>
+        <adminroot>/usr/share/icecast/admin</adminroot>
+        <pidfile>/run/icecast-rec/pid</pidfile>
+        <alias source="/" dest="/status.xsl"/>
+    </paths>
+
+    <logging>
+        <accesslog>-</accesslog>
+        <errorlog>-</errorlog>
+        <loglevel>3</loglevel>
+    </logging>
+
+    <security>
+        <chroot>0</chroot>
+    </security>
+</icecast>

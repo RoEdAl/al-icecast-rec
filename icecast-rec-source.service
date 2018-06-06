@@ -1,0 +1,26 @@
+[Unit]
+Description=Icecast Source [REC]
+Requisite=icecast-rec.service
+PartOf=icecast-rec.service
+After=network.target sound.target icecast-rec.service
+
+[Service]
+EnvironmentFile=/etc/conf.d/icecast-rec
+ExecStart=/usr/lib/icecast-rec/icecast-source ${SOURCE_PROFILE}
+User=nobody
+Group=audio
+ProtectSystem=yes
+NoNewPrivileges=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+RestrictAddressFamilies=AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+Restart=on-abort
+RestartSec=5
+Nice=-15
+LimitNPROC=20
+
+[Install]
+WantedBy=multi-user.target
+Also=icecast-rec.service
