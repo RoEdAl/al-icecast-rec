@@ -30,12 +30,6 @@
         <alias source="/" dest="/status.xsl"/>
     </paths>
 
-    <logging>
-        <accesslog>-</accesslog>
-        <errorlog>-</errorlog>
-        <loglevel>3</loglevel>
-    </logging>
-
     <security>
         <chroot>0</chroot>
     </security>

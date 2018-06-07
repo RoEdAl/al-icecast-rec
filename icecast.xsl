@@ -6,6 +6,7 @@
     <xsl:param name="server-location" select="/icecast/location" />
     <xsl:param name="server-admin" select="/icecast/admin" />
     <xsl:param name="server-port" select="/icecast/listen-socket/port" />
+    <xsl:param name="server-loglevel" select="/icecast/logging/loglevel" />
 
     <xsl:param name="pwd-source" />
     <xsl:param name="pwd-relay" />
@@ -49,9 +50,16 @@
                 <xsl:call-template name="mount_block" />
             </xsl:for-each>
 
-            <xsl:for-each select="limits|directory|http-headers|relay|paths|logging|security">
+            <xsl:for-each select="limits|directory|http-headers|relay|paths|security">
                 <xsl:call-template name="deep_copy" />
             </xsl:for-each>
+
+            <logging>
+                <accesslog>-</accesslog>
+                <errorlog>-</errorlog>
+                <loglevel><xsl:value-of select="$server-loglevel" /></loglevel>
+            </logging>
+
         </xsl:element>
     </xsl:template>
 

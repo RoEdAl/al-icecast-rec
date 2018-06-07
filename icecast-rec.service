@@ -9,6 +9,7 @@ ExecStartPre=/usr/bin/xsltproc \
 	--stringparam server-location ${SERVER_LOCATION} \
 	--stringparam server-admin ${SERVER_ADMIN} \
 	--stringparam server-port ${SERVER_PORT} \
+	--stringparam server-loglevel ${SERVER_LOGLEVEL} \
 	--stringparam pwd-source ${PWD_SOURCE} \
 	--stringparam pwd-relay ${PWD_RELAY} \
 	--stringparam pwd-admin ${PWD_ADMIN} \
