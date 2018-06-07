@@ -1,11 +1,18 @@
 # icecast - broadcasting audio directly from sound card (Arch Linux package)
 
+## Features
+
+* Two sources - audio is encoded twice:
+  * `/live` - Opus codec (adjustable bitrate),
+  * `/live-hd` - FLAC codec (ogg stream).
+* Simple, flat configuration files.
+* No log files - logging to journal only.
+
 ## Installation
 
-* Build package.
-* Install package. Optionally install `mailcap` package.
-* Edit [`/etc/conf.d/icecast-rec`](env) configuration file.
-  You can also modify [`/etc/icecast-rec.xml`](icecast.xml) for more advanced options.
+* Build and install package.
+* Optionally install `mailcap` package.
+* Edit [`/etc/conf.d/icecast-rec`](env) and [`/etc/conf.d/icecast-rec-source`](env-source) configuration files.
 * Adjust required capture mixer settings of selected sound device.
 * Enable/start [`icecast-rec`](icecast-rec.service) and [`icecast-rec-source`](icecast-rec-source.service) services.
 
