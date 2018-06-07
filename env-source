@@ -1,0 +1,18 @@
+# Source(s) configuration
+
+AUDIO_DEVICE=hw:audioinjectorpi
+AUDIO_SAMPLE_RATE=48000
+ARECORD_FORMAT=S32_LE
+FFMPEG_FORMAT=s32le
+
+OPUS_BITRATE=96k
+OPUS_PACKET_LOSS=5
+
+# 'opus', 'flac' or 'both'
+SOURCE_PROFILE=both
+
+SOURCE_NAME=Live stream
+SOURCE_DESCRIPTION=Opus codec
+
+HD_SOURCE_NAME=Live stream HD
+HD_SOURCE_DESCRIPTION=FLAC codec
