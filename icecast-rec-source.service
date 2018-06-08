@@ -1,5 +1,5 @@
 [Unit]
-Description=Icecast Source [REC]
+Description=IceCast Source [REC]
 Requisite=icecast-rec.service
 PartOf=icecast-rec.service
 After=network.target sound.target icecast-rec.service
@@ -21,6 +21,8 @@ Restart=on-abort
 RestartSec=5
 Nice=-15
 LimitNPROC=20
+IPAddressAllow=localhost
+IPAddressDeny=any
 
 [Install]
 WantedBy=multi-user.target
