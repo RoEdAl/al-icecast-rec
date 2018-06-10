@@ -1,4 +1,4 @@
-# icecast - broadcasting audio directly from sound card (Arch Linux package)
+# icecast - broadcasting audio directly from sound card [Arch Linux package]
 
 ## Features
 
@@ -20,4 +20,4 @@
 
 * [Icecast Documentation](http://icecast.org/docs/)
 * [Issue with FFMPEG ALSA CPU usage](//trac.ffmpeg.org/ticket/6156)
-* [Stereo Raspberry pi sound card](http://www.audioinjector.net/rpi-hat)
+* [Stereo Raspberry Pi Sound Card](http://www.audioinjector.net/rpi-hat)
