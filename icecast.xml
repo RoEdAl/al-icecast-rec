@@ -3,7 +3,7 @@
         <clients>10</clients>
         <sources>2</sources>
         <queue-size>24000</queue-size>
-        <burst-size>6000</burst-size>
+        <burst-size>3000</burst-size>
     </limits>
 
     <authentication/>
@@ -16,7 +16,7 @@
         <hidden>0</hidden>
         <public>1</public>
         <queue-size>24000</queue-size>
-        <burst-size>6000</burst-size>
+        <burst-size>3000</burst-size>
     </mount>
 
     <mount type="normal">
@@ -26,7 +26,7 @@
     <mount type="normal">
         <mount-name>/live-hd</mount-name>
         <queue-size>200000</queue-size>
-        <burst-size>50000</burst-size>
+        <burst-size>25000</burst-size>
     </mount>
 
     <paths>
