@@ -27,6 +27,7 @@ ProtectControlGroups=yes
 ProtectKernelModules=yes
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 RestrictNamespaces=yes
+TasksMax=20
 
 [Install]
 WantedBy=multi-user.target
