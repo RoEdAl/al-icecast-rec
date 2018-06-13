@@ -2,6 +2,8 @@
     <limits>
         <clients>10</clients>
         <sources>2</sources>
+        <queue-size>24000</queue-size>
+        <burst-size>6000</burst-size>
     </limits>
 
     <authentication/>
@@ -10,16 +12,21 @@
         <header name="Access-Control-Allow-Origin" value="*" />
     </http-headers>
 
-    <mount type="normal">
-        <mount-name>/live</mount-name>
+    <mount type="default">
         <hidden>0</hidden>
         <public>1</public>
+        <queue-size>24000</queue-size>
+        <burst-size>6000</burst-size>
+    </mount>
+
+    <mount type="normal">
+        <mount-name>/live</mount-name>
     </mount>
 
     <mount type="normal">
         <mount-name>/live-hd</mount-name>
-        <hidden>0</hidden>
-        <public>1</public>
+        <queue-size>200000</queue-size>
+        <burst-size>50000</burst-size>
     </mount>
 
     <paths>
