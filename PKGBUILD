@@ -28,12 +28,12 @@ backup=(
 
 sha256sums=('2808fc3011a080dfa6ac926301e79a62121fa169ea78af8222c1d9d5b1d82cbd'
             '438c5d091c7a18128ed21c294c17414ff2fe1e2e14bed87cb8286e068bf6ade0'
-            '5aa0188854038e20044a9388c813a1b3ee080404d4ad6f707765503aa12d1ea7'
+            'bca9dd5495a18df1d3efef9e71ad2719389d1bba40f9b4dca0acbc8be93d313c'
             '6518412a66065b3fc38890f99d8060b83a6327185470d045eaf45ad2e2b314d9'
             'e96b061e77901e16dbe59c876b85d70ebb4cbee3218ceaca618dba7abc699e40'
             '1d13e88013dcd90b41e15d4b3426f1d7c30a5885385b7445d47daed4feb2bfd7'
             '7ae24befe514f922e5b2c9df87d23e50510811aded3a094f758e362c8db5e855'
-            'e09df9ec79aeab83df434a15c2a4d52aac5de5b8bdb5e2fdd355938c0a04ae0f')
+            '063254c0fc15ceff0cf905171d4ec594a5a9d969893fe9d39a1dd6ed578eca23')
 
 package(){
 	install -d -m 0755 ${pkgdir}/usr/lib/systemd/system
