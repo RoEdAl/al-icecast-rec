@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+echoerr() {
+    echo "$@" 1>&2
+}
+
 make_pattern() {
     local FRAME_SIZE=$((${AUDIO_SAMPLE_RATE:-48000} / 400))
     case $1 in
@@ -20,7 +24,7 @@ make_pattern() {
         ;;
 
         *)
-        echo "Invalid parameter: $1"
+        echoerr "Invalid pattern: $1"
         return 1
         ;;
     esac
@@ -53,34 +57,7 @@ readonly -a HD_ICE_SOURCE=(
     -user_agent "${SOURCE_USER_AGENT}"
     "icecast://source:${PWD_SOURCE:-source}@[::1]:${SERVER_PORT:-50000}/live-hd")
 
-if [[ ! -z ${AUDIO_PATTERN} ]]; then
-    readonly -a FFMPEG_PRE=(-hide_banner -loglevel repeat+error -re -fflags +genpts -stream_loop -1 -i "${PATTERN_FILE}")
-
-    case $1 in
-         opus)
-         systemd-notify --ready --status="Sending Ogg/Opus stream [${AUDIO_PATTERN}]"
-         ffmpeg "${FFMPEG_PRE[@]}" -f ogg -page_duration 1 -serial_offset $SERIAL_OPUS -c:a libopus "${OPUS_PARAMS[@]}" "${ICE_SOURCE[@]}"
-         ;;
-
-         flac)
-         systemd-notify --ready --status="Sending Ogg/Flac stream [${AUDIO_PATTERN}]"
-         ffmpeg "${FFMPEG_PRE[@]}" -f ogg -page_duration 1 -serial_offset $SERIAL_FLAC -c:a flac "${FLAC_PARAMS[@]}" "${HD_ICE_SOURCE[@]}"
-         ;;
-
-         both)
-         systemd-notify --ready --status="Sending Ogg/Opus + Ogg/Flac stream [${AUDIO_PATTERN}]"
-         ffmpeg "${FFMPEG_PRE[@]}" \
-             -filter_complex '[0:a] asplit=2 [in1][iin2]; [iin2] aformat=sample_fmts=s16 [in2]' \
-             -map '[in1]' -f ogg -page_duration 1 -serial_offset $SERIAL_OPUS -c:a libopus "${OPUS_PARAMS[@]}" "${ICE_SOURCE[@]}" \
-             -map '[in2]' -f ogg -page_duration 1 -serial_offset $SERIAL_FLAC -c:a flac "${FLAC_PARAMS[@]}" "${HD_ICE_SOURCE[@]}"
-         ;;
-
-         *)
-         echo 'Invalid parameter'
-         exit 1
-        ;;
-     esac
-else
+if [[ -z ${AUDIO_PATTERN} ]]; then
     readonly -a ARECORD_PARAMS=(-q -M -N -t raw -D ${AUDIO_DEVICE:-hw:} -c 2 -r ${AUDIO_SAMPLE_RATE:-48000} -f ${AUDIO_FORMAT_ARECORD:-S16_LE})
     readonly -a FFMPEG_PRE=(-hide_banner -loglevel repeat+error -f ${AUDIO_FORMAT_FFMPEG:-s16le} -ac 2 -ar ${AUDIO_SAMPLE_RATE:-48000} -i -)
 
@@ -104,8 +81,35 @@ else
         ;;
 
         *)
-        echo 'Invalid parameter'
+        echoerr "Invalid profile: $1"
         exit 1
        ;;
     esac
+else
+    readonly -a FFMPEG_PRE=(-hide_banner -loglevel repeat+error -re -fflags +genpts -stream_loop -1 -i "${PATTERN_FILE}")
+
+    case $1 in
+         opus)
+         systemd-notify --ready --status="Sending Ogg/Opus stream [${AUDIO_PATTERN}]"
+         ffmpeg "${FFMPEG_PRE[@]}" -f ogg -page_duration 1 -serial_offset $SERIAL_OPUS -c:a libopus "${OPUS_PARAMS[@]}" "${ICE_SOURCE[@]}"
+         ;;
+
+         flac)
+         systemd-notify --ready --status="Sending Ogg/Flac stream [${AUDIO_PATTERN}]"
+         ffmpeg "${FFMPEG_PRE[@]}" -f ogg -page_duration 1 -serial_offset $SERIAL_FLAC -c:a flac "${FLAC_PARAMS[@]}" "${HD_ICE_SOURCE[@]}"
+         ;;
+
+         both)
+         systemd-notify --ready --status="Sending Ogg/Opus + Ogg/Flac stream [${AUDIO_PATTERN}]"
+         ffmpeg "${FFMPEG_PRE[@]}" \
+             -filter_complex '[0:a] asplit=2 [in1][iin2]; [iin2] aformat=sample_fmts=s16 [in2]' \
+             -map '[in1]' -f ogg -page_duration 1 -serial_offset $SERIAL_OPUS -c:a libopus "${OPUS_PARAMS[@]}" "${ICE_SOURCE[@]}" \
+             -map '[in2]' -f ogg -page_duration 1 -serial_offset $SERIAL_FLAC -c:a flac "${FLAC_PARAMS[@]}" "${HD_ICE_SOURCE[@]}"
+         ;;
+
+         *)
+         echoerr "Invalid profile: $1"
+         exit 1
+        ;;
+     esac
 fi
