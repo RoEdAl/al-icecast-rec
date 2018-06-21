@@ -5,11 +5,14 @@ PartOf=icecast-rec.service
 After=network.target sound.target icecast-rec.service
 
 [Service]
+Type=notify
 EnvironmentFile=/etc/conf.d/icecast-rec
 EnvironmentFile=/etc/conf.d/icecast-rec-source
 ExecStart=/usr/lib/icecast-rec/icecast-source ${SOURCE_PROFILE}
+RuntimeDirectory=icecast-rec-source
 User=nobody
 Group=audio
+NotifyAccess=all
 ProtectSystem=yes
 NoNewPrivileges=yes
 ProtectKernelTunables=yes

@@ -1,5 +1,7 @@
 # Source(s) configuration
 
+# supported patterns: white-noise, busy-tone
+AUDIO_PATTERN=
 AUDIO_DEVICE=hw:audioinjectorpi
 AUDIO_SAMPLE_RATE=48000
 AUDIO_FORMAT_ARECORD=S32_LE

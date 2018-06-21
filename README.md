@@ -13,6 +13,7 @@
 * Build and install package.
 * Optionally install `mailcap` package.
 * Edit [`/etc/conf.d/icecast-rec`](env) and [`/etc/conf.d/icecast-rec-source`](env-source) configuration files.
+  You can set `AUDIO_PATTERN` environment variable to `white-noise` or `busy-signal` for test purposes (no audio capturing).
 * Adjust required capture mixer settings of selected sound device.
 * Enable/start [`icecast-rec`](icecast-rec.service) and [`icecast-rec-source`](icecast-rec-source.service) services.
 
