@@ -4,23 +4,48 @@ echoerr() {
     echo "$@" 1>&2
 }
 
-make_pattern() {
-    local FRAME_SIZE=$((${AUDIO_SAMPLE_RATE:-48000} / 400))
+busy_tone_graph() {
+cat <<-FILTER
+	sine=frequency=480:
+		sample_rate=${AUDIO_SAMPLE_RATE:-48000}:
+		duration=2 [c0];
+
+	sine=frequency=620:
+		sample_rate=${AUDIO_SAMPLE_RATE:-48000}:
+		duration=2 [c1];
+
+	[c0][c1] amerge,
+	volume=10dB,
+	aeval=
+		if(eq(round(t/2)\,ceil(t/2))\,val(0)\,-val(1))|
+		if(eq(round(t/2)\,ceil(t/2))\,val(1)\,-val(0)),
+	aeval=
+		if(eq(round(t)\,ceil(t))\,val(ch)\,(random(0)-0.5)*0.04)|
+		if(eq(round(t)\,ceil(t))\,val(ch)\,(random(1)-0.5)*0.04)
+	[out]
+FILTER
+}
+
+white_noise_graph() {
+cat<<-FILTER
+	aevalsrc=
+		(random(0)-0.5)*0.07|
+		(random(1)-0.5)*0.07:
+
+		sample_rate=${AUDIO_SAMPLE_RATE:-48000}:
+		duration=2
+	[out]
+FILTER
+}
+
+get_pattern_graph() {
     case $1 in
         busy-tone)
-        systemd-notify --status="Generating pattern: $1"
-        ffmpeg -y -hide_banner -loglevel repeat+error \
-            -f lavfi -i "sine=frequency=480:sample_rate=${AUDIO_SAMPLE_RATE:-48000}:duration=2:samples_per_frame=${FRAME_SIZE},volume=10dB" \
-            -f lavfi -i "sine=frequency=620:sample_rate=${AUDIO_SAMPLE_RATE:-48000}:duration=2:samples_per_frame=${FRAME_SIZE},volume=10dB" \
-            -filter_complex '[0:a][1:a] amerge=inputs=2 , aeval=if(eq(round(t/2)\,ceil(t/2))\,val(0)\,-val(1))|if(eq(round(t/2)\,ceil(t/2))\,val(1)\,-val(0)) , aeval=if(eq(round(t)\,ceil(t))\,val(ch)\,(random(0)-0.5)*0.04)|if(eq(round(t)\,ceil(t))\,val(ch)\,(random(1)-0.5)*0.04) [out]' \
-            -map '[out]' -c:a pcm_s32le ${PATTERN_FILE}
+	busy_tone_graph
         ;;
 
         white-noise)
-        systemd-notify --status="Generating pattern: $1"
-        ffmpeg -y -hide_banner -loglevel repeat+error \
-            -f lavfi -i "aevalsrc=(random(0)-0.5)*0.07|(random(1)-0.5)*0.07:sample_rate=${AUDIO_SAMPLE_RATE:-48000}:duration=2:nb_samples=${FRAME_SIZE}" \
-            -c:a pcm_s32le ${PATTERN_FILE}
+	white_noise_graph
         ;;
 
         *)
@@ -31,8 +56,11 @@ make_pattern() {
 }
 
 [[ -z ${AUDIO_PATTERN} ]] || {
+    readonly PATTERN_GRAPH='/run/icecast-rec-source/pattern.txt'
     readonly PATTERN_FILE='/run/icecast-rec-source/pattern.mka'
-    make_pattern ${AUDIO_PATTERN}
+    get_pattern_graph ${AUDIO_PATTERN} > ${PATTERN_GRAPH}
+    systemd-notify --status="Generating pattern: ${AUDIO_PATTERN}"
+    ffmpeg -y -hide_banner -loglevel repeat+error -filter_complex_threads 1 -filter_complex_script ${PATTERN_GRAPH} -map '[out]' -c:a pcm_s32le ${PATTERN_FILE}
 }
 
 readonly -a OPUS_PARAMS=(-b:a ${OPUS_BITRATE:-96k} -compression_level 0 -vbr constrained -packet_loss ${OPUS_PACKET_LOSS:-5} -frame_duration 10)
@@ -75,6 +103,7 @@ if [[ -z ${AUDIO_PATTERN} ]]; then
         both)
         systemd-notify --ready --status="Sending Ogg/Opus + Ogg/Flac stream [${AUDIO_DEVICE:-hw:}]"
         arecord "${ARECORD_PARAMS[@]}" | ffmpeg "${FFMPEG_PRE[@]}" \
+	    -filter_complex_threads 2 \
             -filter_complex '[0:a] asplit=2 [in1][iin2]; [iin2] aformat=sample_fmts=s16 [in2]' \
             -map '[in1]' -f ogg -page_duration 1 -serial_offset $SERIAL_OPUS -c:a libopus "${OPUS_PARAMS[@]}" "${ICE_SOURCE[@]}" \
             -map '[in2]' -f ogg -page_duration 1 -serial_offset $SERIAL_FLAC -c:a flac "${FLAC_PARAMS[@]}" "${HD_ICE_SOURCE[@]}"
@@ -102,6 +131,7 @@ else
          both)
          systemd-notify --ready --status="Sending Ogg/Opus + Ogg/Flac stream [${AUDIO_PATTERN}]"
          ffmpeg "${FFMPEG_PRE[@]}" \
+             -filter_complex_threads 2 \
              -filter_complex '[0:a] asplit=2 [in1][iin2]; [iin2] aformat=sample_fmts=s16 [in2]' \
              -map '[in1]' -f ogg -page_duration 1 -serial_offset $SERIAL_OPUS -c:a libopus "${OPUS_PARAMS[@]}" "${ICE_SOURCE[@]}" \
              -map '[in2]' -f ogg -page_duration 1 -serial_offset $SERIAL_FLAC -c:a flac "${FLAC_PARAMS[@]}" "${HD_ICE_SOURCE[@]}"
