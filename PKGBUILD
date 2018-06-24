@@ -3,7 +3,7 @@
 pkgname='icecast-rec'
 pkgdesc='icecast - broadcasting audio directly from sound card'
 pkgver='2'
-pkgrel='1'
+pkgrel='2'
 arch=('any')
 license=('BSD')
 depends=('icecast' 'libxslt' 'ffmpeg' 'alsa-utils')
@@ -31,7 +31,7 @@ sha256sums=('e9d5279a2f69a8425c4c05114b80ed215c63b534f9ca3dce8b5709f9ec194772'
             'b67a65eb9b4cf14eab91864e3a58b4669652650c06cc381e1929558958c33a43'
             '6518412a66065b3fc38890f99d8060b83a6327185470d045eaf45ad2e2b314d9'
             '4d00c33e05fccd895b5b1bfc5924e610bf2d0268e46b8f0c5b616d8b5401a450'
-            '1d13e88013dcd90b41e15d4b3426f1d7c30a5885385b7445d47daed4feb2bfd7'
+            '86776bd891c76c54bdf0ab642f477ef9e38784fe9f09fb99c01318c4c8897af9'
             '7ae24befe514f922e5b2c9df87d23e50510811aded3a094f758e362c8db5e855'
             '3ae818a88c5c3f765e0a75902485853c8c4a7eb9da49a5d0e867e07ac98dfc61')
 

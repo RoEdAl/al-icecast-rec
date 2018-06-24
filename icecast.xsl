@@ -46,11 +46,11 @@
                 </xsl:call-template>
             </xsl:for-each>
 
-            <xsl:for-each select="mount">
+            <xsl:for-each select="mount[@type='default']">
                 <xsl:call-template name="mount_block" />
             </xsl:for-each>
 
-            <xsl:for-each select="limits|directory|http-headers|relay|paths|security">
+            <xsl:for-each select="limits|directory|http-headers|relay|paths|security|mount[@type='normal']">
                 <xsl:call-template name="deep_copy" />
             </xsl:for-each>
 
